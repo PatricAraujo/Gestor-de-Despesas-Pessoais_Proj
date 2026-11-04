@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./JS/script.js" defer></script>
+    <title>Gestor de Despesas Pessoais</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome para Ícones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./CSS/style.css" />
+
+</head>
+
+<body>
+
+    <!-- NAV / HEADER -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 py-3 border-bottom border-secondary">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold fs-4" href="#">
+                <i class="fa-solid fa-wallet text-success me-2"></i>GestPess
+            </a>
+
+            <div class="d-flex align-items-center gap-3">
+                <!-- Informação da API do Tempo / Hora -->
+                <div id="weather-info" class="text-light small d-none d-md-block border-end pe-3 border-secondary">
+                    <i class="fa-solid fa-cloud-sun me-1"></i> <span id="tempo-txt">Carregando...</span> | <span
+                        id="data-hora">--:--</span>
+                </div>
+
+                <!-- Botão Alterar Tema (Claro/Escuro) -->
+                <button id="btn-tema" class="btn btn-outline-light btn-sm me-2">
+                    <i id="icon-tema" class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Login / Perfil do Utilizador -->
+                <div id="user-area" class="d-flex align-items-center gap-2 text-white">
+                    <span id="user-name" class="fw-semibold">Olá, Utilizador</span>
+                    <i id="login-icon" class="fa-solid fa-circle-user fs-3"></i>
+                    <button id="btn-login-modal" class="btn btn-sm btn-outline-success ms-2" data-bs-toggle="modal"
+                        data-bs-target="#loginModal">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- ASIDE / BARRA LATERAL (CATEGORIAS) -->
+            <aside class="col-md-3 col-lg-2 sidebar p-3 border-end">
+                <h6 class="text-uppercase text-muted fw-bold mb-3 fs-7">Todas as Categorias</h6>
+                <div class="list-group list-group-flush rounded" id="categorias-list">
+                    <button class="list-group-item list-group-item-action active d-flex align-items-center gap-2"
+                        data-categoria="todas">
+                        <i class="fa-solid fa-border-all"></i> Todas
+                    </button>
+                    <button class="list-group-item list-group-item-action d-flex align-items-center gap-2"
+                        data-categoria="Comida & Bebida">
+                        <i class="fa-solid fa-utensils text-danger"></i> Comida & Bebida
+                    </button>
+                    <button class="list-group-item list-group-item-action d-flex align-items-center gap-2"
+                        data-categoria="Compras">
+                        <i class="fa-solid fa-bag-shopping text-info"></i> Compras
+                    </button>
+                    <button class="list-group-item list-group-item-action d-flex align-items-center gap-2"
+                        data-categoria="Habitação">
+                        <i class="fa-solid fa-house text-warning"></i> Habitação
+                    </button>
+                    <button class="list-group-item list-group-item-action d-flex align-items-center gap-2"
+                        data-categoria="Transporte">
+                        <i class="fa-solid fa-bus text-primary"></i> Transporte
+                    </button>
+                    <button class="list-group-item list-group-item-action d-flex align-items-center gap-2"
+                        data-categoria="Veículo">
+                        <i class="fa-solid fa-car text-secondary"></i> Veículo
+                    </button>
+                    <button class="list-group-item list-group-item-action d-flex align-items-center gap-2"
+                        data-categoria="Lazer">
+                        <i class="fa-solid fa-gamepad text-success"></i> Vida & Entretenimento
+                    </button>
+                    <button class="list-group-item list-group-item-action d-flex align-items-center gap-2"
+                        data-categoria="Comunicação">
+                        <i class="fa-solid fa-laptop text-dark"></i> Comunicação, PC
+                    </button>
+                </div>
+            </aside>
+
+            <!-- SECTION PRINCIPAL -->
+            <section class="col-md-9 col-lg-10 p-4">
+
+                <!-- CABEÇALHO DA SECTION: CARTÕES DE RESUMO -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="card card-resumo p-3 bg-white border-start border-4 border-primary">
+                            <span class="text-muted small fw-bold">SALDO TOTAL</span>
+                            <h3 class="fw-bold mb-0 text-primary" id="saldo-total">0,00 €</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-resumo p-3 bg-white border-start border-4 border-success">
+                            <span class="text-muted small fw-bold">RECEITAS</span>
+                            <h3 class="fw-bold mb-0 text-success" id="total-receitas">0,00 €</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card card-resumo p-3 bg-white border-start border-4 border-danger">
+                            <span class="text-muted small fw-bold">DESPESAS</span>
+                            <h3 class="fw-bold mb-0 text-danger" id="total-despesas">0,00 €</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORMULÁRIO DE REGISTO DE DESPESA / RECEITA -->
+                <div class="card card-resumo p-4 mb-4 bg-white">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-plus-circle me-2 text-primary"></i>Novo Registo</h5>
+
+                    <!-- Form configurado com IDs e Names para capturar com FormData -->
+                    <form id="formDespesa" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="descricao" class="form-label fw-semibold">Descrição</label>
+                            <input type="text" class="form-control" id="descricao" name="descricao"
+                                placeholder="Ex: Supermercado" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="valor" class="form-label fw-semibold">Valor (€)</label>
+                            <input type="number" step="0.01" class="form-control" id="valor" name="valor"
+                                placeholder="0.00" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="categoria" class="form-label fw-semibold">Categoria</label>
+                            <select class="form-select" id="categoria" name="categoria" required>
+                                <option value="" selected disabled>Escolha...</option>
+                                <option value="Comida & Bebida">Comida & Bebida</option>
+                                <option value="Compras">Compras</option>
+                                <option value="Habitação">Habitação</option>
+                                <option value="Transporte">Transporte</option>
+                                <option value="Veículo">Veículo</option>
+                                <option value="Lazer">Vida & Entretenimento</option>
+                                <option value="Comunicação">Comunicação, PC</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="tipo" class="form-label fw-semibold">Tipo</label>
+                            <select class="form-select" id="tipo" name="tipo" required>
+                                <option value="despesa" selected>Despesa</option>
+                                <option value="receita">Receita</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100 fw-bold"><i
+                                    class="fa-solid fa-check"></i></button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- HISTÓRICO / TABELA DE TRANSAÇÕES -->
+                <div class="card card-resumo p-4 bg-white">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-list me-2 text-secondary"></i>Histórico de
+                            Movimentos</h5>
+                        <span class="badge bg-secondary" id="filtro-ativo-badge">Categoria: Todas</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle" id="tabela-despesas">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-corpo">
+                                <!-- As linhas vão ser inseridas aqui via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-light text-center py-3 mt-auto border-top border-secondary">
+        <small>&copy; 2026 Gestor de Despesas Pessoais - Projeto CESAE</small>
+    </footer>
+
+    <!-- MODAL DE LOGIN (SIMULAÇÃO DE SESSÃO) -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Iniciar Sessão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formLogin">
+                        <div class="mb-3">
+                            <label for="inputNome" class="form-label">Nome do Utilizador</label>
+                            <input type="text" class="form-control" id="inputNome" name="inputNome"
+                                placeholder="Digite o seu nome" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 fw-bold"
+                            data-bs-dismiss="modal">Entrar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

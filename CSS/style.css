@@ -1,0 +1,42 @@
+body {
+    background-color: #f4f69f; /* Mantido exatamente como tinhas */
+}
+
+.sidebar {
+    min-height: calc(100vh - 70px);
+    background-color: #ffffff;
+}
+
+.card-resumo {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* --- MODO ESCURO (Sem !important) --- */
+
+/* Ajusta o fundo geral e o texto do corpo no modo escuro */
+[data-bs-theme="dark"] body {
+    background-color: #121212;
+    color: #f8f9fa;
+}
+
+/* Ajusta a sidebar no modo escuro */
+html[data-bs-theme="dark"] .sidebar {
+    background-color: #1e1e1e;
+    border-color: #2c2c2c;
+}
+
+/* Ajusta os cartões, resumos e modais no modo escuro */
+html[data-bs-theme="dark"] .card, 
+html[data-bs-theme="dark"] .card-resumo,
+html[data-bs-theme="dark"] .modal-content {
+    background-color: #1e1e1e;
+    color: #f8f9fa;
+    border-color: #2c2c2c;
+}
+
+/* Ajusta as tabelas no modo escuro */
+html[data-bs-theme="dark"] table {
+    color: #f8f9fa;
+}
